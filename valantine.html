@@ -11,6 +11,24 @@
       padding: 0;
       margin: 0;
     }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: #ff4b6e;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s, transform 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .back-btn:hover {
+      background: #ff3356;
+      transform: scale(1.05);
+    }
+
 
     body {
       min-height: 100vh;
@@ -183,6 +201,8 @@
 
     <div class="floating-hearts"></div>
   </div>
+  <a href="https://mufaz.online" class="back-btn">← Back to Home</a>
+
 
   <script>
     let noButtonDodgeCount = 0;
