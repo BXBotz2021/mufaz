@@ -1,2 +1,2 @@
 # mufaz
-web
+mufaz.online
