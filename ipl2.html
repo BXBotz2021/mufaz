@@ -7,29 +7,30 @@
     * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-    body, html {
+    html, body {
       width: 100%;
       height: 100%;
-      background: #000;
       overflow: hidden;
+      background: #000;
     }
     .iframe-wrapper {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      position: relative;
     }
     iframe {
-      width: 1600px;  /* Oversized for zoom */
-      height: 900px;
-      transform: scale(1.5); /* Zoom factor */
-      transform-origin: center center; /* 👈 center zoom */
+      width: 100vw;
+      height: 56.25vw; /* 16:9 aspect ratio (height = width * 9 / 16) */
+      max-height: 100vh;
+      max-width: 177.78vh; /* width = height * 16 / 9 */
+      transform: scale(1.5); /* Adjust zoom level */
+      transform-origin: center center; /* Center zoom */
       border: none;
-      pointer-events: none; /* optional: disables interaction */
     }
   </style>
 </head>
