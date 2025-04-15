@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zoomed Stream</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+    .iframe-container {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    iframe {
+      position: absolute;
+      top: -150px; /* Adjust this to center the video */
+      left: -200px; /* Adjust this as well */
+      width: 1600px; /* Zoom level width */
+      height: 1200px; /* Zoom level height */
+      transform: scale(1.5); /* Zoom amount */
+      transform-origin: top left;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="iframe-container">
+    <iframe src="https://8088y.site/AiyooPL/Ast.php" allowfullscreen></iframe>
+  </div>
+
+</body>
+</html>
