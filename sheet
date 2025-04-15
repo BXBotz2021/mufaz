@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Spreadsheet Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+        }
+        iframe {
+            border: none;
+            width: 90%;
+            height: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📊 My Cool Spreadsheet</h1>
+
+    <iframe 
+        src="https://docs.google.com/spreadsheets/d/1w5nBD9jXNAi6KuRqDdaKtQVPcwUSzBP802xhJFC9WaI/edit?usp=sharing"
+        allowfullscreen>
+    </iframe>
+
+</body>
+</html>
