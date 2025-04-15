@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stream Video</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live IPL Stream</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin: 20px 0;
+      font-size: 2rem;
+    }
+    iframe {
+      width: 100%;
+      max-width: 960px;
+      height: 540px;
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Watch Video</h1>
-  <video id="video" controls autoplay width="100%" height="auto"></video>
+  <h1>📺 Live IPL Match Stream</h1>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script>
-    var video = document.getElementById('video');
-    var videoSrc = 'https://8088y.site/AiyooPL/Ast.php'; // Add your PHP stream URL
-
-    if (Hls.isSupported()) {
-      var hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = videoSrc;
-    }
-  </script>
+  <iframe 
+    src="https://8088y.site/AiyooPL/Ast.php" 
+    allowfullscreen 
+    scrolling="no">
+  </iframe>
 
 </body>
 </html>
