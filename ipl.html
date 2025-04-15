@@ -2,41 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live IPL Stream</title>
+  <title>Centered Zoom Stream</title>
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
       background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
+    }
+    .iframe-wrapper {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
     }
-    h1 {
-      margin: 20px 0;
-      font-size: 2rem;
-    }
     iframe {
-      width: 100%;
-      max-width: 960px;
-      height: 540px;
+      width: 100vw;
+      height: 56.25vw; /* 16:9 aspect ratio (height = width * 9 / 16) */
+      max-height: 100vh;
+      max-width: 177.78vh; /* width = height * 16 / 9 */
+      transform: scale(1.5); /* Adjust zoom level */
+      transform-origin: center center; /* Center zoom */
       border: none;
-      border-radius: 12px;
-      overflow: hidden;
     }
   </style>
 </head>
 <body>
 
-  <h1>📺 Live IPL Match Stream</h1>
-
-  <iframe 
-    src="https://8088y.site/AiyooPL/Ast.php" 
-    allowfullscreen 
-    scrolling="no">
-  </iframe>
+  <div class="iframe-wrapper">
+    <iframe src="https://8088y.site/AiyooPL/Ast.php" allowfullscreen></iframe>
+  </div>
 
 </body>
 </html>
