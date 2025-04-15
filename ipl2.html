@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Centered Zoom Stream</title>
+  <title>Zoomed IPL Stream (Fullscreen Enabled)</title>
   <style>
     * {
       margin: 0;
@@ -13,23 +13,23 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+      background-color: #000;
     }
     .iframe-wrapper {
       width: 100vw;
       height: 100vh;
-      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
     iframe {
       width: 100vw;
-      height: 56.25vw; /* 16:9 aspect ratio (height = width * 9 / 16) */
+      height: 56.25vw; /* 16:9 */
       max-height: 100vh;
-      max-width: 177.78vh; /* width = height * 16 / 9 */
-      transform: scale(1.5); /* Adjust zoom level */
-      transform-origin: center center; /* Center zoom */
+      max-width: 177.78vh;
+      transform: scale(1.5); /* Adjust for zoom */
+      transform-origin: center center;
       border: none;
     }
   </style>
@@ -37,7 +37,11 @@
 <body>
 
   <div class="iframe-wrapper">
-    <iframe src="https://8088y.site/AiyooPL/Ast.php" allowfullscreen></iframe>
+    <iframe 
+      src="https://8088y.site/AiyooPL/Ast.php"
+      allow="fullscreen"
+      allowfullscreen>
+    </iframe>
   </div>
 
 </body>
