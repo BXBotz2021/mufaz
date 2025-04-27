@@ -337,7 +337,20 @@
             font-weight: 600;
             color: var(--dark);
         }
-        
+        .breaking-news {
+            background: #ff0000;
+            color: white;
+            font-weight: bold;
+            padding: 10px 0;
+            font-size: 1.1rem;
+            text-align: center;
+            z-index: 1000;
+            position: relative;
+        }
+        .breaking-news marquee {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         .form-group input,
         .form-group textarea {
             width: 100%;
@@ -469,6 +482,12 @@
     </style>
 </head>
 <body>
+    <div class="breaking-news">
+  <marquee behavior="scroll" direction="left" scrollamount="8">
+    🚨 CONTACT THROUGH INSTAGRAM FOR WEBSITE DESIGN WORKS 🚨
+  </marquee>
+</div>
+
     <header>
         <div class="container animate">
             <img src="https://i.ibb.co/fzmncQ7J/photo-2025-04-03-13-46-24-7489082870003138596.jpg" alt="MUHAMMED MUFAZ V.K" class="profile-pic">
