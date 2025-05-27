@@ -2,16 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Funny Keyboard</title>
+  <title>Working Meme Keyboard</title>
   <style>
     body {
       font-family: sans-serif;
       background: #f0f0f0;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
+      padding: 20px;
+    }
+
+    textarea {
+      width: 80%;
+      height: 100px;
+      font-size: 18px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      resize: none;
     }
 
     .keyboard {
@@ -34,12 +46,12 @@
       align-items: center;
       font-size: 18px;
       font-weight: bold;
-      cursor: default;
+      cursor: pointer;
+      user-select: none;
     }
 
     .key.special {
       background: #ddd;
-      font-size: 14px;
     }
 
     .space {
@@ -52,6 +64,9 @@
   </style>
 </head>
 <body>
+
+  <textarea id="output" placeholder="Type something..."></textarea>
+
   <div class="keyboard">
     <!-- Row 1 -->
     <div class="key">h</div>
@@ -78,7 +93,7 @@
     <div class="key">w</div>
 
     <!-- Row 3 -->
-    <div class="key special">⇧</div>
+    <div class="key special" onclick="backspace()">⌫</div>
     <div class="key">k</div>
     <div class="key">k</div>
     <div class="key">k</div>
@@ -87,13 +102,49 @@
     <div class="key">k</div>
     <div class="key">k</div>
     <div class="key">k</div>
-    <div class="key special">⌫</div>
+    <div class="key special" onclick="backspace()">⌫</div>
 
     <!-- Row 4 -->
     <div class="key special">?123</div>
     <div class="key special">🌐</div>
-    <div class="key space special"></div>
-    <div class="key enter">⏎</div>
+    <div class="key space special" onclick="typeKey(' ')"></div>
+    <div class="key enter" onclick="typeKey('\n')">⏎</div>
   </div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    function typeKey(char) {
+      const start = output.selectionStart;
+      const end = output.selectionEnd;
+      const text = output.value;
+      output.value = text.slice(0, start) + char + text.slice(end);
+      output.focus();
+      output.selectionStart = output.selectionEnd = start + char.length;
+    }
+
+    function backspace() {
+      const start = output.selectionStart;
+      const end = output.selectionEnd;
+      const text = output.value;
+
+      if (start === end && start > 0) {
+        output.value = text.slice(0, start - 1) + text.slice(end);
+        output.selectionStart = output.selectionEnd = start - 1;
+      } else {
+        output.value = text.slice(0, start) + text.slice(end);
+        output.selectionStart = output.selectionEnd = start;
+      }
+
+      output.focus();
+    }
+
+    document.querySelectorAll(".key:not(.special)").forEach(key => {
+      key.addEventListener("click", () => {
+        typeKey(key.textContent);
+      });
+    });
+  </script>
+
 </body>
 </html>
