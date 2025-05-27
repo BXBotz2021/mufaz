@@ -2,149 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Working Meme Keyboard</title>
+  <title>Dancing Dude</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      padding: 20px;
+      margin: 0;
+      overflow: hidden;
+      background: #111;
     }
 
-    textarea {
-      width: 80%;
-      height: 100px;
-      font-size: 18px;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      resize: none;
+    #dancingImage {
+      position: absolute;
+      width: 150px;
+      height: auto;
+      z-index: 9999;
+      animation: wiggle 0.3s infinite alternate ease-in-out;
     }
 
-    .keyboard {
-      display: grid;
-      grid-template-columns: repeat(10, 40px);
-      gap: 5px;
-      background: #e2e2e2;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .key {
-      height: 40px;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .key.special {
-      background: #ddd;
-    }
-
-    .space {
-      grid-column: span 4;
-    }
-
-    .enter {
-      background: #0f0;
+    @keyframes wiggle {
+      0% { transform: rotate(-10deg) scale(1.05); }
+      100% { transform: rotate(10deg) scale(1); }
     }
   </style>
 </head>
 <body>
 
-  <textarea id="output" placeholder="Type something..."></textarea>
+<img id="dancingImage" src="https://envs.sh/vKU.jpg" alt="dancing guy" />
 
-  <div class="keyboard">
-    <!-- Row 1 -->
-    <div class="key">h</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
-    <div class="key">m</div>
+<script>
+  const img = document.getElementById('dancingImage');
 
-    <!-- Row 2 -->
-    <div class="key">a</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
-    <div class="key">w</div>
+  // Random position generator
+  function moveImageRandomly() {
+    const maxX = window.innerWidth - img.offsetWidth;
+    const maxY = window.innerHeight - img.offsetHeight;
 
-    <!-- Row 3 -->
-    <div class="key special" onclick="backspace()">⌫</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key">k</div>
-    <div class="key special" onclick="backspace()">⌫</div>
+    const randomX = Math.floor(Math.random() * maxX);
+    const randomY = Math.floor(Math.random() * maxY);
 
-    <!-- Row 4 -->
-    <div class="key special">?123</div>
-    <div class="key special">🌐</div>
-    <div class="key space special" onclick="typeKey(' ')"></div>
-    <div class="key enter" onclick="typeKey('\n')">⏎</div>
-  </div>
+    img.style.left = `${randomX}px`;
+    img.style.top = `${randomY}px`;
+  }
 
-  <script>
-    const output = document.getElementById('output');
+  // Move every 800ms
+  setInterval(moveImageRandomly, 800);
 
-    function typeKey(char) {
-      const start = output.selectionStart;
-      const end = output.selectionEnd;
-      const text = output.value;
-      output.value = text.slice(0, start) + char + text.slice(end);
-      output.focus();
-      output.selectionStart = output.selectionEnd = start + char.length;
-    }
-
-    function backspace() {
-      const start = output.selectionStart;
-      const end = output.selectionEnd;
-      const text = output.value;
-
-      if (start === end && start > 0) {
-        output.value = text.slice(0, start - 1) + text.slice(end);
-        output.selectionStart = output.selectionEnd = start - 1;
-      } else {
-        output.value = text.slice(0, start) + text.slice(end);
-        output.selectionStart = output.selectionEnd = start;
-      }
-
-      output.focus();
-    }
-
-    document.querySelectorAll(".key:not(.special)").forEach(key => {
-      key.addEventListener("click", () => {
-        typeKey(key.textContent);
-      });
-    });
-  </script>
+  // Initial move
+  moveImageRandomly();
+</script>
 
 </body>
 </html>
