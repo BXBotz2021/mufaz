@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Funny Keyboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      gap: 5px;
+      background: #e2e2e2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .key {
+      height: 40px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: default;
+    }
+
+    .key.special {
+      background: #ddd;
+      font-size: 14px;
+    }
+
+    .space {
+      grid-column: span 4;
+    }
+
+    .enter {
+      background: #0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="keyboard">
+    <!-- Row 1 -->
+    <div class="key">h</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+    <div class="key">m</div>
+
+    <!-- Row 2 -->
+    <div class="key">a</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+    <div class="key">w</div>
+
+    <!-- Row 3 -->
+    <div class="key special">⇧</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key">k</div>
+    <div class="key special">⌫</div>
+
+    <!-- Row 4 -->
+    <div class="key special">?123</div>
+    <div class="key special">🌐</div>
+    <div class="key space special"></div>
+    <div class="key enter">⏎</div>
+  </div>
+</body>
+</html>
