@@ -430,6 +430,181 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #1e40af;
         }
+
+        /* Add these new styles before the media queries */
+        .certificates-section {
+            background: var(--bg-color);
+            position: relative;
+        }
+
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .certificate-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .certificate-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .certificate-content {
+            padding: 1.5rem;
+        }
+
+        .certificate-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .certificate-issuer {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .certificate-date {
+            color: var(--gray);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .certificate-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 3rem auto 0;
+        }
+
+        .achievement-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .achievement-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-text {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .badge-wall {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .badge-item {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .badge-info h4 {
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .badge-info p {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        /* Add this to the existing media queries */
+        @media (max-width: 768px) {
+            .certificates-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .achievements-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+
+            .badge-wall {
+                padding: 0 1rem;
+            }
+        }
     </style>
 </head>
 <body data-theme="light">
@@ -531,6 +706,154 @@
                         <span class="project-tag">JavaScript</span>
                     </div>
                     <a href="tools.html" class="btn btn-primary">View Project</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="certificates" class="section certificates-section">
+        <div class="section-title">
+            <h2>Certificates & Achievements</h2>
+            <p>Recognition of my skills and accomplishments</p>
+        </div>
+        
+        <div class="certificates-grid">
+            <div class="certificate-card">
+                <img src="image/cert-web-dev.jpg" alt="Web Development Certificate" class="certificate-image">
+                <span class="certificate-badge">Verified</span>
+                <div class="certificate-content">
+                    <h3 class="certificate-title">Full Stack Web Development</h3>
+                    <div class="certificate-issuer">
+                        <i class="fas fa-award"></i>
+                        <span>Udemy</span>
+                    </div>
+                    <div class="certificate-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Completed December 2023</span>
+                    </div>
+                    <a href="#" class="btn btn-primary">View Certificate</a>
+                </div>
+            </div>
+
+            <div class="certificate-card">
+                <img src="image/cert-digital-marketing.jpg" alt="Digital Marketing Certificate" class="certificate-image">
+                <span class="certificate-badge">Verified</span>
+                <div class="certificate-content">
+                    <h3 class="certificate-title">Digital Marketing Professional</h3>
+                    <div class="certificate-issuer">
+                        <i class="fas fa-award"></i>
+                        <span>Google</span>
+                    </div>
+                    <div class="certificate-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Completed November 2023</span>
+                    </div>
+                    <a href="#" class="btn btn-primary">View Certificate</a>
+                </div>
+            </div>
+
+            <div class="certificate-card">
+                <img src="image/cert-mobile-dev.jpg" alt="Mobile Development Certificate" class="certificate-image">
+                <span class="certificate-badge">Verified</span>
+                <div class="certificate-content">
+                    <h3 class="certificate-title">Mobile App Development</h3>
+                    <div class="certificate-issuer">
+                        <i class="fas fa-award"></i>
+                        <span>Coursera</span>
+                    </div>
+                    <div class="certificate-date">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>Completed October 2023</span>
+                    </div>
+                    <a href="#" class="btn btn-primary">View Certificate</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="achievements-grid">
+            <div class="achievement-card">
+                <i class="fas fa-code achievement-icon"></i>
+                <div class="achievement-number">50+</div>
+                <div class="achievement-text">Projects Completed</div>
+            </div>
+
+            <div class="achievement-card">
+                <i class="fas fa-users achievement-icon"></i>
+                <div class="achievement-number">100+</div>
+                <div class="achievement-text">Happy Clients</div>
+            </div>
+
+            <div class="achievement-card">
+                <i class="fas fa-award achievement-icon"></i>
+                <div class="achievement-number">15+</div>
+                <div class="achievement-text">Certifications</div>
+            </div>
+
+            <div class="achievement-card">
+                <i class="fas fa-star achievement-icon"></i>
+                <div class="achievement-number">5+</div>
+                <div class="achievement-text">Years Experience</div>
+            </div>
+        </div>
+
+        <div class="badge-wall">
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fab fa-html5"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>HTML5 Expert</h4>
+                    <p>Advanced Web Development</p>
+                </div>
+            </div>
+
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fab fa-css3-alt"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>CSS3 Master</h4>
+                    <p>Advanced Styling</p>
+                </div>
+            </div>
+
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fab fa-js"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>JavaScript Pro</h4>
+                    <p>Advanced Programming</p>
+                </div>
+            </div>
+
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fab fa-react"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>React Developer</h4>
+                    <p>Frontend Development</p>
+                </div>
+            </div>
+
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fab fa-node-js"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>Node.js Expert</h4>
+                    <p>Backend Development</p>
+                </div>
+            </div>
+
+            <div class="badge-item">
+                <div class="badge-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="badge-info">
+                    <h4>Mobile Developer</h4>
+                    <p>Cross-platform Apps</p>
                 </div>
             </div>
         </div>
