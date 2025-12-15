@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -219,5 +219,515 @@
     </div>
   </div>
 
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture Controlled 3D Particles</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #050505; font-family: 'Inter', sans-serif; }
+        
+        /* The 3D Canvas */
+        canvas { display: block; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* The Webcam Feed (Hidden but processing, optional to show for debug) */
+        #input_video {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 160px;
+            height: 120px;
+            z-index: 2;
+            transform: scaleX(-1); /* Mirror effect */
+            border-radius: 8px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* UI Interface */
+        #ui-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 280px;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 10;
+            color: white;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        h1 { font-size: 1.2rem; margin: 0 0 15px 0; font-weight: 700; letter-spacing: -0.5px; }
+        
+        .control-group { margin-bottom: 20px; }
+        .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 8px; display: block; }
+
+        /* Shape Buttons */
+        .shape-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.2); }
+        .btn.active { background: #3b82f6; color: white; font-weight: 600; }
+
+        /* Color Picker */
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* Status Indicator */
+        #status {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff4444; }
+        .dot.active { background: #00cc66; box-shadow: 0 0 8px #00cc66; }
+        
+        #loading {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; z-index: 20; font-size: 1.2rem; pointer-events: none;
+        }
+    </style>
+
+    <!-- Dependencies -->
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="loading">Initialize Camera & AI...</div>
+
+    <!-- Hidden Video Element for AI Processing -->
+    <video id="input_video"></video>
+
+    <!-- UI Panel -->
+    <div id="ui-panel">
+        <h1>Particle Controller</h1>
+        
+        <div class="control-group">
+            <span class="label">Select Shape</span>
+            <div class="shape-grid">
+                <button class="btn active" onclick="setShape('heart')">❤️ Heart</button>
+                <button class="btn" onclick="setShape('flower')">🌸 Flower</button>
+                <button class="btn" onclick="setShape('saturn')">🪐 Saturn</button>
+                <button class="btn" onclick="setShape('buddha')">🧘 Buddha</button>
+                <button class="btn" onclick="setShape('fireworks')">🎆 Fireworks</button>
+                <button class="btn" onclick="setShape('sphere')">⚪ Sphere</button>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <span class="label">Particle Color</span>
+            <input type="color" id="colorPicker" value="#00ffff">
+        </div>
+
+        <div id="status">
+            <div class="dot" id="status-dot"></div>
+            <span id="status-text">Waiting for hands...</span>
+        </div>
+        
+        <div style="margin-top:10px; font-size: 0.75rem; opacity: 0.7;">
+            Show both hands and move them apart to expand.
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. THREE.JS SCENE SETUP ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 60;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+
+        // --- 2. PARTICLE SYSTEM ---
+        const particleCount = 15000;
+        const geometry = new THREE.BufferGeometry();
+        
+        // Arrays to hold data
+        const currentPositions = new Float32Array(particleCount * 3);
+        const targetPositions = new Float32Array(particleCount * 3);
+        
+        // Initialize randomly
+        for(let i=0; i<particleCount*3; i++) {
+            currentPositions[i] = (Math.random() - 0.5) * 100;
+            targetPositions[i] = currentPositions[i];
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
+
+        // Create a glow texture programmatically
+        const getTexture = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32; canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0.2)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 32, 32);
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        };
+
+        const material = new THREE.PointsMaterial({
+            size: 0.5,
+            map: getTexture(),
+            transparent: true,
+            opacity: 0.9,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            color: new THREE.Color(0x00ffff)
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        // --- 3. SHAPE GENERATION LOGIC ---
+        
+        // Helper: Point on sphere
+        function randomSpherePoint(r) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            return {
+                x: r * Math.sin(phi) * Math.cos(theta),
+                y: r * Math.sin(phi) * Math.sin(theta),
+                z: r * Math.cos(phi)
+            };
+        }
+
+        const shapes = {
+            sphere: () => {
+                for(let i=0; i<particleCount; i++) {
+                    const p = randomSpherePoint(20 + Math.random() * 2);
+                    targetPositions[i*3] = p.x;
+                    targetPositions[i*3+1] = p.y;
+                    targetPositions[i*3+2] = p.z;
+                }
+            },
+            heart: () => {
+                for(let i=0; i<particleCount; i++) {
+                    // Parametric Heart
+                    let t = Math.random() * Math.PI * 2;
+                    let u = Math.random(); // volume filler
+                    let scale = 1.5;
+                    
+                    // Basic 2D heart extrusion + noise
+                    let x = 16 * Math.pow(Math.sin(t), 3);
+                    let y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                    let z = (Math.random() - 0.5) * 10; 
+
+                    // Scale
+                    targetPositions[i*3] = x * scale;
+                    targetPositions[i*3+1] = y * scale;
+                    targetPositions[i*3+2] = z;
+                }
+            },
+            saturn: () => {
+                for(let i=0; i<particleCount; i++) {
+                    const r = Math.random();
+                    if(r > 0.4) {
+                        // Planet Body
+                        const p = randomSpherePoint(15);
+                        targetPositions[i*3] = p.x;
+                        targetPositions[i*3+1] = p.y;
+                        targetPositions[i*3+2] = p.z;
+                    } else {
+                        // Rings
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = 22 + Math.random() * 15;
+                        targetPositions[i*3] = Math.cos(angle) * dist;
+                        targetPositions[i*3+1] = (Math.random()-0.5) * 1; // Flattened
+                        targetPositions[i*3+2] = Math.sin(angle) * dist;
+                        
+                        // Tilt the rings
+                        const x = targetPositions[i*3];
+                        const y = targetPositions[i*3+1];
+                        const tilt = 0.4;
+                        targetPositions[i*3] = x * Math.cos(tilt) - y * Math.sin(tilt);
+                        targetPositions[i*3+1] = x * Math.sin(tilt) + y * Math.cos(tilt);
+                    }
+                }
+            },
+            flower: () => {
+                for(let i=0; i<particleCount; i++) {
+                    const u = Math.random() * Math.PI * 2; // angle around
+                    const v = Math.random() * Math.PI; // angle up/down
+                    const petals = 5;
+                    // Radius varies by angle to create petals
+                    const r = 20 + 10 * Math.sin(v * petals) * Math.sin(u * petals);
+                    
+                    targetPositions[i*3] = r * Math.sin(v) * Math.cos(u);
+                    targetPositions[i*3+1] = r * Math.sin(v) * Math.sin(u);
+                    targetPositions[i*3+2] = r * Math.cos(v);
+                }
+            },
+            buddha: () => {
+                // Approximate Meditating Figure using stacked ellipsoids
+                for(let i=0; i<particleCount; i++) {
+                    const r = Math.random();
+                    let x,y,z;
+
+                    if(r < 0.25) {
+                        // Head
+                        const p = randomSpherePoint(6);
+                        x = p.x; y = p.y + 14; z = p.z;
+                    } else if (r < 0.65) {
+                        // Body
+                        const p = randomSpherePoint(10);
+                        x = p.x * 1.2; y = p.y; z = p.z * 0.8;
+                    } else {
+                        // Legs/Base
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = 8 + Math.random() * 12;
+                        x = Math.cos(angle) * dist;
+                        y = -10 + (Math.random() * 4);
+                        z = Math.sin(angle) * dist * 0.7;
+                    }
+                    targetPositions[i*3] = x;
+                    targetPositions[i*3+1] = y;
+                    targetPositions[i*3+2] = z;
+                }
+            },
+            fireworks: () => {
+                for(let i=0; i<particleCount; i++) {
+                    // Explosion Burst
+                    const p = randomSpherePoint(30 * Math.random()); // Solid sphere volume
+                    targetPositions[i*3] = p.x;
+                    targetPositions[i*3+1] = p.y;
+                    targetPositions[i*3+2] = p.z;
+                }
+            }
+        };
+
+        // Current Interaction State
+        let expansionFactor = 0; // 0 = normal, 1 = fully expanded
+        let targetExpansion = 0;
+
+        // UI Helpers
+        window.setShape = (type) => {
+            if(shapes[type]) shapes[type]();
+            // Update active button class
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        };
+
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            material.color.set(e.target.value);
+        });
+
+        // Initialize with Heart
+        shapes.heart();
+
+        // --- 4. MEDIAPIPE HANDS SETUP ---
+        const videoElement = document.getElementById('input_video');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const loading = document.getElementById('loading');
+
+        function onResults(results) {
+            loading.style.display = 'none';
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length === 2) {
+                // Two hands detected
+                statusDot.classList.add('active');
+                statusText.innerText = "Hands Connected";
+
+                const hand1 = results.multiHandLandmarks[0];
+                const hand2 = results.multiHandLandmarks[1];
+
+                // Get wrist coordinates (landmark 0)
+                const x1 = hand1[0].x; 
+                const y1 = hand1[0].y;
+                const x2 = hand2[0].x;
+                const y2 = hand2[0].y;
+
+                // Calculate Euclidean distance (normalized 0-1 approx)
+                const dist = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                
+                // Map distance to expansion
+                // 0.2 is close, 0.8 is far
+                let factor = (dist - 0.2) * 2.5; 
+                if(factor < 0) factor = 0;
+                if(factor > 1.5) factor = 1.5;
+
+                targetExpansion = factor;
+
+            } else {
+                // Less than 2 hands
+                statusDot.classList.remove('active');
+                statusText.innerText = "Waiting for two hands...";
+                targetExpansion = 0;
+            }
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+        
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        
+        hands.onResults(onResults);
+
+        const cameraUtils = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 640,
+            height: 480
+        });
+        
+        cameraUtils.start();
+
+
+        // --- 5. ANIMATION LOOP ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = clock.getDelta();
+            const time = clock.getElapsedTime();
+            
+            controls.update();
+
+            // Smoothly interpolate expansion factor
+            expansionFactor += (targetExpansion - expansionFactor) * 0.1;
+
+            const positions = geometry.attributes.position.array;
+
+            for(let i=0; i<particleCount; i++) {
+                const ix = i*3;
+                const iy = i*3+1;
+                const iz = i*3+2;
+
+                const tx = targetPositions[ix];
+                const ty = targetPositions[iy];
+                const tz = targetPositions[iz];
+
+                // 1. Morph to Shape (Lerp)
+                positions[ix] += (tx - positions[ix]) * 0.05;
+                positions[iy] += (ty - positions[iy]) * 0.05;
+                positions[iz] += (tz - positions[iz]) * 0.05;
+
+                // 2. Apply Hand Expansion (Explosion effect from center)
+                // We add the position vector scaled by expansionFactor
+                // Use a little noise for jitter
+                const noise = Math.sin(time * 2 + i) * 0.2;
+                
+                const finalScale = 1 + (expansionFactor * 3); // Max 4x size
+
+                // Temporary view position for rendering
+                // Note: We don't overwrite 'positions' permanently with scale, 
+                // we apply it relative to the morph target for stability,
+                // but for simple vertex shader-like behavior in CPU:
+                
+                // Since we are modifying the buffer directly, we need a way to keep the base shape
+                // Actually, the Lerp above moves 'positions' TO 'targetPositions'. 
+                // To support expansion properly without losing the shape, we should have calculated 
+                // the render position separately. 
+                // However, to keep it performant in this simple loop:
+                // We will apply the expansion visual by scaling the entire mesh object 
+                // or modifying the loop logic slightly.
+                
+                // Let's Scale the Whole Mesh Object for smooth "breathing"
+                particles.scale.setScalar(finalScale);
+                
+                // Add some "nervous" energy when expanded
+                if(expansionFactor > 0.1) {
+                    positions[ix] += (Math.random()-0.5) * expansionFactor;
+                    positions[iy] += (Math.random()-0.5) * expansionFactor;
+                    positions[iz] += (Math.random()-0.5) * expansionFactor;
+                }
+            }
+
+            geometry.attributes.position.needsUpdate = true;
+            
+            // Subtle rotation
+            particles.rotation.y = time * 0.1;
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle Resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+    </script>
 </body>
 </html>
